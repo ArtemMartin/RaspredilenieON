@@ -4,7 +4,6 @@
  */
 package com.mycompany.raspredilenieon;
 
-import java.awt.Color;
 import javax.swing.JButton;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -82,30 +81,37 @@ public class NewJFrame extends javax.swing.JFrame {
         jLabel7.setForeground(new java.awt.Color(0, 0, 0));
         jLabel7.setText("У=");
 
+        tfXLeft.setBackground(new java.awt.Color(51, 51, 51));
         tfXLeft.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
-        tfXLeft.setForeground(new java.awt.Color(0, 0, 0));
+        tfXLeft.setForeground(new java.awt.Color(153, 204, 0));
 
+        tfYLeft.setBackground(new java.awt.Color(51, 51, 51));
         tfYLeft.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
-        tfYLeft.setForeground(new java.awt.Color(0, 0, 0));
+        tfYLeft.setForeground(new java.awt.Color(153, 204, 0));
 
+        tfXRight.setBackground(new java.awt.Color(51, 51, 51));
         tfXRight.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
-        tfXRight.setForeground(new java.awt.Color(0, 0, 0));
+        tfXRight.setForeground(new java.awt.Color(153, 204, 0));
 
+        tfYRight.setBackground(new java.awt.Color(51, 51, 51));
         tfYRight.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
-        tfYRight.setForeground(new java.awt.Color(0, 0, 0));
+        tfYRight.setForeground(new java.awt.Color(153, 204, 0));
 
         jLabel8.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
         jLabel8.setForeground(new java.awt.Color(0, 0, 0));
         jLabel8.setText("К-во орудий");
 
+        tfCountOrydii.setBackground(new java.awt.Color(51, 51, 51));
         tfCountOrydii.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
-        tfCountOrydii.setForeground(new java.awt.Color(0, 0, 0));
+        tfCountOrydii.setForeground(new java.awt.Color(51, 204, 255));
 
         jLabel9.setFont(new java.awt.Font("sansserif", 2, 14)); // NOI18N
         jLabel9.setForeground(new java.awt.Color(0, 0, 204));
         jLabel9.setText("Ввести количество и нажать ENTER!");
 
+        jTable1.setBackground(new java.awt.Color(51, 51, 51));
         jTable1.setFont(new java.awt.Font("sansserif", 2, 18)); // NOI18N
+        jTable1.setForeground(new java.awt.Color(204, 204, 204));
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null}

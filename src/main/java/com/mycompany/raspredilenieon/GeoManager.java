@@ -4,6 +4,7 @@
  */
 package com.mycompany.raspredilenieon;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -11,6 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.swing.JFrame;
 
 /**
  *
@@ -21,21 +23,62 @@ public class GeoManager implements Runnable {
     RaionCelei raionCelei;
     Map<String, double[]> listOP;
     Map<String, double[]> sortedListOP;
+    static double[] daFrRaionZelei;
+    static int countOP;
+    static double frontNaOryd;
+    Map<String, Integer> listNameON = new LinkedHashMap<>();
 
     public GeoManager(RaionCelei raionCelei, Map<String, double[]> listOP) {
         this.raionCelei = raionCelei;
         this.listOP = listOP;
     }
 
+    //формируем карту позывной основное
+    public Map<String, Integer> getMapNameON(Map<String, double[]> sortedListOP) {
+        List<double[]> listYcastkiXY = getListXYYchastki();
+        Map<String, Integer> mapNameON = new LinkedHashMap<>();
+        int i = 0;
+        String name;
+        double[] xyOP;
+        double[] xyYchstka;
+        double[] osNaprDalOr;
+        int osNapr;
+        for (Map.Entry<String, double[]> entry : sortedListOP.entrySet()) {
+            name = entry.getKey();
+            xyOP = entry.getValue();
+            xyYchstka = listYcastkiXY.get(i);
+            osNaprDalOr = OGZ(xyYchstka[0], xyYchstka[1], xyOP[0], xyOP[1]);
+            osNapr = (int) Math.round(osNaprDalOr[1] / 100);
+            mapNameON.put(name, osNapr);
+            i++;
+        }
+        return mapNameON;
+    }
+
+    //получаем список координат орудийных участков
+    public List<double[]> getListXYYchastki() {
+        double polYchastkaOryd = (daFrRaionZelei[0] / countOP) / 2;
+        frontNaOryd = polYchastkaOryd * 2;
+        List<double[]> listYcastkiXY = new ArrayList<>();
+        double[] xy;
+        double prirashchenYchastka = polYchastkaOryd;
+        for (int i = 0; i < countOP; i++) {
+            xy = PGZ(raionCelei.getxLev(), raionCelei.getyLev(), daFrRaionZelei[1], prirashchenYchastka);
+            listYcastkiXY.add(xy);
+            prirashchenYchastka += polYchastkaOryd * 2;
+        }
+        return listYcastkiXY;
+    }
+
     //сортируем список ОП слева на право относительно центра района целей
     public Map<String, double[]> getSortedList(Map<String, double[]> listOP, RaionCelei raionCelei) {
         Map<String, double[]> sortedListOP = new LinkedHashMap<>();
-
-        double[] daFrRaionZelei = OGZ(raionCelei.getxPrav(), raionCelei.getyPrav(),
+        //получаем фронт и угол района целей
+        daFrRaionZelei = OGZ(raionCelei.getxPrav(), raionCelei.getyPrav(),
                 raionCelei.getxLev(), raionCelei.getyLev());
         double d = daFrRaionZelei[0];
         double a = daFrRaionZelei[1];
-        //опредиляем координаты центра района целей
+        //определяем координаты центра района целей
         double[] xyCentra = PGZ(raionCelei.getxLev(), raionCelei.getyLev(), a, d / 2);
         //формируем список ДУ по центру для ОП
         Map<String, Double> listNameYgol = new LinkedHashMap<>();
@@ -49,21 +92,18 @@ public class GeoManager implements Runnable {
             listNameYgol.put(key, dalYgol[1]);
         }
         //переопредиляем компаратор для сортировки
-        Comparator<Map.Entry<String, Double>> comparator = new Comparator<Map.Entry<String, Double>>() {
-            @Override
-            public int compare(Map.Entry<String, Double> o1, Map.Entry<String, Double> o2) {
-                if (o1.getValue() >= 4500 && o2.getValue() <= 1500) {
-                    o2.setValue(o2.getValue() + 6000);
-                }
-                return o2.getValue().compareTo(o1.getValue());
+        Comparator<Map.Entry<String, Double>> comparator;
+        comparator = (Map.Entry<String, Double> o1, Map.Entry<String, Double> o2) -> {
+            if (o1.getValue() >= 4500 && o2.getValue() <= 1500) {
+                o2.setValue(o2.getValue() + 6000);
             }
+            return o2.getValue().compareTo(o1.getValue());
         };
         //сортируем
         List<Map.Entry<String, Double>> entries = new ArrayList<>(listNameYgol.entrySet());
         Collections.sort(entries, comparator);
-        //чистим
-        listNameYgol.clear();
-        //записываем
+
+        //записываем отсортированный список
         for (Map.Entry<String, Double> e : entries) {
             sortedListOP.put(e.getKey(), listOP.get(e.getKey()));
         }
@@ -98,5 +138,28 @@ public class GeoManager implements Runnable {
     @Override
     public void run() {
         sortedListOP = getSortedList(listOP, raionCelei);
+        countOP = sortedListOP.size();
+        listNameON = getMapNameON(sortedListOP);
+        //выводим расчеты
+        FrameOutput frameOutput = new FrameOutput();
+        frameOutput.getContentPane().setBackground(new Color(153, 153, 0));
+        frameOutput.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frameOutput.setVisible(true);
+        String output = "ОП слева на право \n";
+        for (Map.Entry<String, double[]> entry : sortedListOP.entrySet()) {
+            String name = entry.getKey();
+            double[] xyOP = entry.getValue();
+            output += name + " Х = " + xyOP[0] + " У = " + xyOP[1] + "\n";
+        }
+        output += "ОН\n";
+        for (Map.Entry<String, Integer> entry : listNameON.entrySet()) {
+            String name = entry.getKey();
+            Integer val = entry.getValue();
+            output += name + " -> " + val + "\n";
+        }
+        output += "Фронт на орудие -> " + Math.round(frontNaOryd);
+
+        frameOutput.getjTextAreaOutput().setText(output);
     }
+
 }

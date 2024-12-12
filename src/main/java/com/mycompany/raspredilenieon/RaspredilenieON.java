@@ -6,11 +6,11 @@ package com.mycompany.raspredilenieon;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
@@ -33,15 +33,19 @@ public class RaspredilenieON {
 
         centerAllValuesInJTable(frame.getjTable1());
 
+        //запускаем поток слушать поля
+        Thread thread = new Thread(new ListenerTextFieldFrame(frame));
+        thread.start();
+
         //слушаем кнопку Решить
-        frame.getBtnReshit().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                DefaultTableModel model = (DefaultTableModel) frame.getjTable1().getModel();
-                listOP = getTableData(model);
-                RaionCelei raionCelei = new RaionCelei(frame);
-                new GeoManager(raionCelei, listOP).run();
-            }
+        frame.getBtnReshit().addActionListener((ActionEvent e) -> {
+            DefaultTableModel model = (DefaultTableModel) frame.getjTable1().getModel();
+            listOP = getTableData(model);
+            RaionCelei raionCelei = new RaionCelei(frame);
+            GeoManager geoManager = new GeoManager(raionCelei, listOP);
+            geoManager.run();
+            System.out.println(geoManager.toString());
+
         });
 
         //слушаем к-во орудий и меняем таблицу
