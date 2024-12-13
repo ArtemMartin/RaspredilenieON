@@ -4,24 +4,31 @@
  */
 package com.mycompany.raspredilenieon;
 
+import java.util.logging.Logger;
+
 /**
  *
  * @author user
  */
 public class RaionCelei {
 
-    final double xLev;
-    final double yLev;
-    final double xPrav;
-    final double yPrav;
-    final int countOryd;
+    double xLev;
+    double yLev;
+    double xPrav;
+    double yPrav;
+    int countOryd;
 
     public RaionCelei(NewJFrame frame) {
-        this.xLev =Double.parseDouble( frame.getTfXLeft().getText());
-        this.yLev = Double.parseDouble( frame.getTfYLeft().getText());
-        this.xPrav = Double.parseDouble( frame.getTfXRight().getText());
-        this.yPrav = Double.parseDouble( frame.getTfYRight().getText());
-        this.countOryd = Integer.parseInt(frame.getTfCountOrydii().getText());
+        try {
+            this.xLev = Double.parseDouble(frame.getTfXLeft().getText());
+            this.yLev = Double.parseDouble(frame.getTfYLeft().getText());
+            this.xPrav = Double.parseDouble(frame.getTfXRight().getText());
+            this.yPrav = Double.parseDouble(frame.getTfYRight().getText());
+            this.countOryd = Integer.parseInt(frame.getTfCountOrydii().getText());
+        } catch (Exception ex) {
+            System.out.println("In the RaionCelei constructor, getting an empty value from a field: "
+                    + ex.getMessage());
+        }
     }
 
     public double getxLev() {
@@ -43,5 +50,5 @@ public class RaionCelei {
     public int getCountOryd() {
         return countOryd;
     }
-    
+
 }

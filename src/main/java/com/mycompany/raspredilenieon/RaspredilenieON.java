@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
@@ -40,17 +39,26 @@ public class RaspredilenieON {
         //слушаем кнопку Решить
         frame.getBtnReshit().addActionListener((ActionEvent e) -> {
             DefaultTableModel model = (DefaultTableModel) frame.getjTable1().getModel();
-            listOP = getTableData(model);
-            RaionCelei raionCelei = new RaionCelei(frame);
-            GeoManager geoManager = new GeoManager(raionCelei, listOP);
-            geoManager.run();
-            System.out.println(geoManager.toString());
+            try {
+                listOP = getTableData(model);
+                RaionCelei raionCelei = new RaionCelei(frame);
+                GeoManager geoManager = new GeoManager(raionCelei, listOP);
+                geoManager.run();
+            } catch (Exception ex) {
+                System.out.println("Check the table of guns, an empty value is received: "
+                        + ex.getMessage());
+            }
 
         });
 
         //слушаем к-во орудий и меняем таблицу
         frame.getTfCountOrydii().addActionListener((ActionEvent e) -> {
-            counOryd = Integer.parseInt(frame.getTfCountOrydii().getText());
+            try {
+                counOryd = Integer.parseInt(frame.getTfCountOrydii().getText());
+            } catch (NumberFormatException ex) {
+                System.out.println("An empty value was received from the number of guns field: "
+                        + ex.getMessage());
+            }
             DefaultTableModel model = (DefaultTableModel) frame.getjTable1().getModel();
             model.setRowCount(counOryd);
         });
