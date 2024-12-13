@@ -1,0 +1,2 @@
+main-class: src/main/java/com/mycompany/raspredilenieon.RaspredilenieON
+class-path: bin/
