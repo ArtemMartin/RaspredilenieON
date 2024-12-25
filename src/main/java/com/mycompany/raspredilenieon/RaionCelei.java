@@ -4,8 +4,6 @@
  */
 package com.mycompany.raspredilenieon;
 
-import java.util.logging.Logger;
-
 /**
  *
  * @author user

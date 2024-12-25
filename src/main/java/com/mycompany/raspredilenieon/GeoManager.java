@@ -93,11 +93,15 @@ public class GeoManager implements Runnable {
         }
         //переопредиляем компаратор для сортировки
         Comparator<Map.Entry<String, Double>> comparator;
-        comparator = (Map.Entry<String, Double> o1, Map.Entry<String, Double> o2) -> {
-            if (o1.getValue() >= 4500 && o2.getValue() <= 1500) {
-                o2.setValue(o2.getValue() + 6000);
+        comparator = new Comparator<Map.Entry<String, Double>>() {
+            @Override
+            public int compare(Map.Entry<String, Double> o1, Map.Entry<String, Double> o2) {
+                if (o2.getValue() >= 4500.0 && o1.getValue() <= 1500.0) {
+                    o1.setValue(o1.getValue() + 6000.0);                  
+                    return o2.getValue().compareTo(o1.getValue());
+                }            
+                return o2.getValue().compareTo(o1.getValue());
             }
-            return o2.getValue().compareTo(o1.getValue());
         };
         //сортируем
         List<Map.Entry<String, Double>> entries = new ArrayList<>(listNameYgol.entrySet());
